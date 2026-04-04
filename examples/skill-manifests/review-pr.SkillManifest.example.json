@@ -1,0 +1,43 @@
+{
+  "id": "urn:srcos:skill:openclaw:review-pr",
+  "type": "SkillManifest",
+  "specVersion": "2.1.0-agentplane-draft",
+  "name": "review-pr",
+  "version": "draft-2026-04-03",
+  "entryDoc": ".agents/skills/review-pr/SKILL.md",
+  "description": "Review a GitHub PR in an isolated worktree and persist findings to .local/review.md.",
+  "activationRules": {
+    "commands": [
+      "/reviewpr"
+    ],
+    "intentTags": [
+      "review",
+      "worktree",
+      "read-only"
+    ]
+  },
+  "requires": {
+    "binaries": [
+      "gh",
+      "git"
+    ],
+    "tools": [
+      "bash"
+    ]
+  },
+  "executionSurfaceRef": "urn:srcos:surface:openclaw:review-pr",
+  "policyBindings": [
+    "review-only",
+    "no-push-main",
+    "worktree-required"
+  ],
+  "artifactOutputs": [
+    ".local/review.md"
+  ],
+  "reviewMode": true,
+  "allowShellExecution": true,
+  "protectedPaths": [
+    "main",
+    "origin/main"
+  ]
+}
