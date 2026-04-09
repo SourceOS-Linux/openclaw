@@ -1,0 +1,21 @@
+{
+  "pty": true,
+  "workdir": "~/project",
+  "background": true,
+  "reviewOnly": false,
+  "worktreeStrategy": "none",
+  "sandboxMode": "user",
+  "networkMode": "allowlist",
+  "egressAllowlist": [
+    "code-host"
+  ],
+  "elevated": false,
+  "protectedPaths": [
+    ".git",
+    ".claude",
+    ".vscode",
+    ".idea",
+    ".husky"
+  ],
+  "approvalProfile": "coding-agent"
+}

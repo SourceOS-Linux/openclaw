@@ -1,0 +1,50 @@
+{
+  "id": "urn:srcos:skill:openclaw:coding-agent",
+  "type": "SkillManifest",
+  "specVersion": "2.1.0-agentplane-draft",
+  "name": "coding-agent",
+  "version": "draft-2026-04-03",
+  "entryDoc": "skills/coding-agent/SKILL.md",
+  "description": "Run Codex CLI, Claude Code, OpenCode, or Pi via background process for programmatic control.",
+  "activationRules": {
+    "commands": [
+      "coding-agent"
+    ],
+    "intentTags": [
+      "codegen",
+      "background-agent",
+      "interactive-cli"
+    ]
+  },
+  "requires": {
+    "anyBins": [
+      "claude",
+      "codex",
+      "opencode",
+      "pi"
+    ],
+    "tools": [
+      "bash",
+      "process"
+    ]
+  },
+  "executionSurfaceRef": "urn:srcos:surface:openclaw:coding-agent",
+  "policyBindings": [
+    "pty-required",
+    "sandbox-default",
+    "background-session-tracked"
+  ],
+  "artifactOutputs": [
+    "session logs",
+    "process output"
+  ],
+  "reviewMode": false,
+  "allowShellExecution": true,
+  "protectedPaths": [
+    ".git",
+    ".claude",
+    ".vscode",
+    ".idea",
+    ".husky"
+  ]
+}
