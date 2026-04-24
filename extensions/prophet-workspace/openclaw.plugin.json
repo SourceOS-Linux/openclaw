@@ -1,0 +1,33 @@
+{
+  "id": "prophet-workspace",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": { "type": "boolean" },
+      "endpoint": { "type": "string" },
+      "authMode": {
+        "type": "string",
+        "enum": ["none", "token", "oauth"]
+      },
+      "tokenEnv": { "type": "string" },
+      "workspaceScope": { "type": "string" }
+    }
+  },
+  "uiHints": {
+    "enabled": { "label": "Enabled" },
+    "endpoint": {
+      "label": "Prophet Endpoint",
+      "placeholder": "http://127.0.0.1:8787"
+    },
+    "authMode": { "label": "Auth Mode" },
+    "tokenEnv": {
+      "label": "Token Environment Variable",
+      "advanced": true
+    },
+    "workspaceScope": {
+      "label": "Workspace Scope",
+      "advanced": true
+    }
+  }
+}
