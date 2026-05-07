@@ -1,3 +1,5 @@
+import { createNoopProphetWorkspaceHooks } from "./src/hooks.js";
+
 const prophetWorkspacePlugin = {
   id: "prophet-workspace",
   name: "Prophet Workspace",
@@ -30,6 +32,7 @@ const prophetWorkspacePlugin = {
   },
   register(api: any) {
     const config = this.configSchema.parse(api.pluginConfig);
+    const hooks = createNoopProphetWorkspaceHooks(api);
 
     api.registerGatewayMethod("prophetWorkspace.status", ({ respond }: any) => {
       respond(true, {
@@ -39,15 +42,77 @@ const prophetWorkspacePlugin = {
         endpoint: config.endpoint ?? null,
         authMode: config.authMode,
         workspaceScope: config.workspaceScope ?? null,
-        phase: "skeleton",
+        phase: "hook-rpc",
+        hooks: [
+          "emitCarrier",
+          "evaluateMembraneDecision",
+          "appendLedgerEvent",
+          "resolveConnectedAppGrant",
+        ],
       });
     });
+
+    api.registerGatewayMethod("prophetWorkspace.emitCarrier", async ({ params, respond }: any) => {
+      try {
+        const result = await hooks.emitCarrier({
+          kind: typeof params?.kind === "string" ? params.kind : "unknown",
+          scope: typeof params?.scope === "string" ? params.scope : undefined,
+          payload: params?.payload ?? {},
+        });
+        respond(true, result);
+      } catch (err) {
+        respond(false, { error: err instanceof Error ? err.message : String(err) });
+      }
+    });
+
+    api.registerGatewayMethod(
+      "prophetWorkspace.evaluateMembraneDecision",
+      async ({ params, respond }: any) => {
+        try {
+          const result = await hooks.evaluateMembraneDecision({
+            action: typeof params?.action === "string" ? params.action : "unknown",
+            resource: typeof params?.resource === "string" ? params.resource : undefined,
+            scope: typeof params?.scope === "string" ? params.scope : undefined,
+            payload: params?.payload,
+          });
+          respond(true, result);
+        } catch (err) {
+          respond(false, { error: err instanceof Error ? err.message : String(err) });
+        }
+      },
+    );
+
+    api.registerGatewayMethod("prophetWorkspace.appendLedgerEvent", async ({ params, respond }: any) => {
+      try {
+        const result = await hooks.appendLedgerEvent({
+          kind: typeof params?.kind === "string" ? params.kind : "unknown",
+          scope: typeof params?.scope === "string" ? params.scope : undefined,
+          payload: params?.payload ?? {},
+        });
+        respond(true, result);
+      } catch (err) {
+        respond(false, { error: err instanceof Error ? err.message : String(err) });
+      }
+    });
+
+    api.registerGatewayMethod(
+      "prophetWorkspace.resolveConnectedAppGrant",
+      async ({ params, respond }: any) => {
+        try {
+          const scope = typeof params?.scope === "string" ? params.scope : "default";
+          const result = await hooks.resolveConnectedAppGrant(scope);
+          respond(true, result);
+        } catch (err) {
+          respond(false, { error: err instanceof Error ? err.message : String(err) });
+        }
+      },
+    );
 
     api.registerCli(
       ({ program }: any) => {
         program
           .command("prophet-workspace-status")
-          .description("Show Prophet workspace plugin skeleton status")
+          .description("Show Prophet workspace plugin status")
           .action(() => {
             api.logger.info(
               `[prophet-workspace] enabled=${String(config.enabled)} endpoint=${config.endpoint ?? "unset"} auth=${config.authMode}`,
@@ -60,10 +125,10 @@ const prophetWorkspacePlugin = {
     api.registerService({
       id: "prophet-workspace",
       start: async () => {
-        api.logger.info("[prophet-workspace] skeleton plugin ready");
+        api.logger.info("[prophet-workspace] hook-rpc plugin ready");
       },
       stop: async () => {
-        api.logger.info("[prophet-workspace] skeleton plugin stopped");
+        api.logger.info("[prophet-workspace] hook-rpc plugin stopped");
       },
     });
   },
