@@ -1,0 +1,39 @@
+name: Prophet Workspace Plugin
+
+on:
+  pull_request:
+    paths:
+      - 'extensions/prophet-workspace/**'
+      - '.github/workflows/prophet-workspace-plugin.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'extensions/prophet-workspace/**'
+      - '.github/workflows/prophet-workspace-plugin.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validate registered hook RPC methods
+        run: |
+          set -euo pipefail
+          grep -q 'prophetWorkspace.status' extensions/prophet-workspace/index.ts
+          grep -q 'prophetWorkspace.emitCarrier' extensions/prophet-workspace/index.ts
+          grep -q 'prophetWorkspace.evaluateMembraneDecision' extensions/prophet-workspace/index.ts
+          grep -q 'prophetWorkspace.appendLedgerEvent' extensions/prophet-workspace/index.ts
+          grep -q 'prophetWorkspace.resolveConnectedAppGrant' extensions/prophet-workspace/index.ts
+      - name: Validate no-op safety posture
+        run: |
+          set -euo pipefail
+          grep -q 'reason: "not-wired"' extensions/prophet-workspace/src/hooks.ts
+          grep -q 'accepted: false' extensions/prophet-workspace/src/hooks.ts
+          grep -q 'allow: false' extensions/prophet-workspace/src/hooks.ts
+          grep -q 'ok: false' extensions/prophet-workspace/src/hooks.ts
+          grep -q 'granted: false' extensions/prophet-workspace/src/hooks.ts
