@@ -60,7 +60,7 @@ if [[ -n "${OPENCLAW_INSTALL_LATEST_OUT:-}" ]]; then
   printf "%s" "$LATEST_VERSION" > "${OPENCLAW_INSTALL_LATEST_OUT:-}"
 fi
 INSTALLED_RAW="$("$CLI_NAME" --version 2>/dev/null | head -n 1 | tr -d '\r')"
-INSTALLED_VERSION="$(printf '%s\n' "$INSTALLED_RAW" | sed -nE 's/.*([0-9]+\.[0-9]+\.[0-9]+([-.][A-Za-z0-9.]+)?).*/\1/p' | head -n 1)"
+INSTALLED_VERSION="$(printf '%s\n' "$INSTALLED_RAW" | grep -Eo '[0-9]{4}\.[0-9]+\.[0-9]+([-.][A-Za-z0-9.]+)?' | head -n 1)"
 echo "cli=$CLI_NAME installed=$INSTALLED_RAW parsed=$INSTALLED_VERSION expected=$LATEST_VERSION"
 
 if [[ "$INSTALLED_VERSION" != "$LATEST_VERSION" ]]; then
