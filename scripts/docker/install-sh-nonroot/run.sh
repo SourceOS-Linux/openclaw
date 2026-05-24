@@ -37,11 +37,12 @@ if [[ -z "$CMD_PATH" ]]; then
   exit 1
 fi
 echo "==> Verify CLI installed: $CLI_NAME"
-INSTALLED_VERSION="$("$CMD_PATH" --version 2>/dev/null | head -n 1 | tr -d '\r')"
+INSTALLED_RAW="$("$CMD_PATH" --version 2>/dev/null | head -n 1 | tr -d '\r')"
+INSTALLED_VERSION="$(printf '%s\n' "$INSTALLED_RAW" | grep -Eo '[0-9]{4}\.[0-9]+\.[0-9]+([-.][A-Za-z0-9.]+)?' | head -n 1)"
 
-echo "cli=$CLI_NAME installed=$INSTALLED_VERSION expected=$LATEST_VERSION"
+echo "cli=$CLI_NAME installed=$INSTALLED_RAW parsed=$INSTALLED_VERSION expected=$LATEST_VERSION"
 if [[ "$INSTALLED_VERSION" != "$LATEST_VERSION" ]]; then
-  echo "ERROR: expected ${CLI_NAME}@${LATEST_VERSION}, got ${CLI_NAME}@${INSTALLED_VERSION}" >&2
+  echo "ERROR: expected ${CLI_NAME}@${LATEST_VERSION}, got ${CLI_NAME}@${INSTALLED_RAW}" >&2
   exit 1
 fi
 
